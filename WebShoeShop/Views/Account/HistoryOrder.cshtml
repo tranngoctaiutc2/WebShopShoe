@@ -1,0 +1,82 @@
+﻿@model PagedList.IPagedList<WebShoeShop.Models.EF.Order>
+@using PagedList.Mvc;
+<style>
+    .table-bordered {
+        border-collapse: collapse;
+    }
+
+        .table-bordered td {
+            border: 1px solid black;
+        }
+</style>
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+@if (Model != null)
+{
+    <h2>Lịch sử mua hàng</h2>
+    var i = 1;
+    <table class="table table-bordered" style="border:2px solid black;">
+        <thead>
+            <tr>
+                <td>STT</td>
+                <td>Mã ĐH</td>
+                <td>Thông tin sản phẩm</td>
+                <td>Tổng tiền</td>
+                <td>Địa chỉ nhận hàng</td>
+                <td>Thời gian đặt hàng</td>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@item.Code</td>
+                    <td>
+                        <table>
+                            <!-- Bảng bên trong để hiển thị thông tin OrderDetail -->
+                            <thead>
+                                <tr>
+                                    <td>Tên sản phẩm</td>
+                                    <td>Hình ảnh</td>
+                                    <td>Số lượng</td>
+                                    <td>Size</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var orderDetail in item.OrderDetails)
+                                {
+                                    var CheckImage = orderDetail.Product.ProductImage.FirstOrDefault(x => x.IsDefault);
+                                    var strImg = "";
+                                    if (CheckImage != null)
+                                    {
+                                        strImg = CheckImage.Image;
+                                    }
+                                    <tr>
+                                        <td>@orderDetail.Product.Title</td>
+                                        <td><img src="@strImg" data-id="@orderDetail.Id alt="Alternate Text" style="width:90px;height:90px;"/></td>
+                                        <td>@orderDetail.Quantity</td>
+
+                                        <td>@orderDetail.Size</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>@item.TotalAmount</td>
+                    <td>@item.Address</td>
+                    <td>@item.CreatedDate</td>
+                </tr>
+                i++;
+            }
+        </tbody>
+    </table>
+    <a href=""></a>
+}
+<div class="row">
+    <div class="col-6"></div>
+    <div class="col-6" style="text-align:right;">
+        @Html.PagedListPager(Model, page => Url.Action("Profile", new { page }))
+    </div>
+</div>
+

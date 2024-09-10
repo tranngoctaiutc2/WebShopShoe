@@ -1,0 +1,42 @@
+﻿@model WebShoeShop.Models.EF.Order
+@{
+    ViewBag.Title = "Đặt hàng thành công";
+}
+
+
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
+<link href="~/Content/assets/styles/main_styles.css" rel="stylesheet" />
+<div class="container product_section_container">
+    <div class="row">
+        <div class="col product_section clearfix">
+
+            <!-- Breadcrumbs -->
+
+            <div class="breadcrumbs d-flex flex-row align-items-center">
+                <ul>
+                    <li><a href="/Home">Home</a></li>
+                    <li class="active"><a href="/shoppingcart"><i class="fa fa-angle-right" aria-hidden="true"></i>Giỏ hàng</a></li>
+                </ul>
+            </div>
+
+            <!-- Sidebar -->
+            <!-- Main Content -->
+
+            <div class="row">
+                <div class="col-md-12 justify-content-md-center" id="load_data">
+                    <h2>Bạn đã mua hàng thành công</h2>
+                    <p>Bạn có thể xem chi tiết trong <a href="~/Account/Profile">đơn hàng của tôi</a></p>
+                    <p>Thời gian dự kiến nhận hàng là 3-5 ngày</p>
+                    <a href="~/home"><i class="fa fa-arrow-left" aria-hidden="true"></i>Quay lại trang chủ</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/assets/js/categories_custom.js"></script>
+}
+

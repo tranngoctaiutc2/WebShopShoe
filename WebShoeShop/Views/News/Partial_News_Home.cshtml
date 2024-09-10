@@ -1,0 +1,44 @@
+﻿@model IEnumerable<WebShoeShop.Models.EF.News>
+<style>
+    .blog_item img {
+        transition: transform 0.3s ease;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+        .blog_item img:hover {
+            transform: scale(1.1);
+            filter: brightness(80%);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+</style>
+@if (Model != null && Model.Any())
+{
+
+    <div class="blogs">
+        <div class="container">
+                        <div class="row">
+            <div class="col text-center">
+                <h3 class="new_arrivals_title" style="margin-top:20px;">
+                    <b></b>
+                    <span>TIN TỨC</span>
+                    <b></b>
+                </h3>
+            </div>
+        </div>
+           
+            <div class="row blogs_container">
+                @foreach (var item in Model)
+                {
+                    <div class="col-lg-4 blog_item_col">
+                        <div class="blog_item">
+                            <a href="/@item.Alias-n@(item.Id)"><img src="@item.Image" style="width:300px;height:300px;"></a>
+                        </div>
+                    </div>
+                }
+
+
+            </div>
+        </div>
+    </div>
+
+}

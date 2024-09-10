@@ -1,0 +1,52 @@
+﻿@model List<WebShoeShop.Models.ProductViewModel>
+@{ 
+    int i = 1;
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title" style="font-weight:600;">Top các sản phẩm bán chạy nhất</h3>
+
+                <div class="card-tools">
+                    @using (Html.BeginForm("GetProductBestSeller", "Statistical", FormMethod.Get, new { }))
+                    {
+                        <div class="input-group input-group-sm">
+                            <input type="text" name="Searchtext" class="form-control" placeholder="Nhập tên sản phẩm">
+                            <span class="input-group-append">
+                                <button type="submit" class="btn btn-info btn-flat">Tìm kiếm</button>
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0" style="height: 500px;">
+                <table class="table table-head-fixed text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Stt</th>
+                            <th>Tên Sản phẩm</th>
+                            <th>Hình ảnh</th>
+                            <th>Tổng số lượng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i</td>  
+                                <td><a href="/chi-tiet/@item.Alias-p@(item.ProductId)">@item.ProductName</a></td>
+                                <td><a href="/chi-tiet/@item.Alias-p@(item.ProductId)"><img src="@item.ProductImage" alt="Hình ảnh sản phẩm" style="width:90px;height:90px;" /></a></td>
+                                <td>@item.TotalQuantity</td>
+                            </tr>
+                            i++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>

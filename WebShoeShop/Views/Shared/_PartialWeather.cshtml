@@ -1,0 +1,48 @@
+﻿
+<link rel="stylesheet" href="~/Content/assets/styles/Weather.css">
+<div id="partial-view-container">
+    <div class="wrong">
+        <p id='wrong-msg'></p>
+    </div>
+    <div class="weather">
+        <div class="weather-box">
+            <h1>Bảng tin thời tiết tại <span id="location1"></span></h1>
+            <div class="correct-city">
+                <img id="weather-icon">
+
+                <div class="main">
+                    <h2 id="temp"></h2>
+                    <span id="condition"></span>
+                </div>
+
+                <div class="forecast">
+                    <h2>Forecast</h2>
+                    <span id="temp_max"></span>
+                    <span id="temp_min"></span>
+                </div>
+
+                <div class="humidity">
+                    <h2>Độ ẩm</h2>
+                    <span id="humidity"></span>
+                    <h2>Tốc độ gió</h2>
+                    <span id="wind-speed"></span>
+                </div>
+
+                <div class="humidity">
+                    <h2>Chỉ số UV</h2>
+                    <span id="uv-index"></span>
+                    <h2>Tình trạng</h2>
+                    <span id="air-pollution-index"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <time id="dmy"></time>
+            <time id="dt"></time>
+            <i class="fa fa-calendar-times-o" aria-hidden="true" style="text-align:right;margin:3px"></i>
+        </div>
+     
+ </div>
+    </div>
+<script src="~/Content/assets/js/Weather.js"></script>

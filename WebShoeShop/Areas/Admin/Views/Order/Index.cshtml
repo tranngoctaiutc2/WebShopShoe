@@ -1,0 +1,261 @@
+﻿@model PagedList.IPagedList<WebShoeShop.Models.EF.Order>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Danh sách đơn hàng";
+}
+@section naviheader{
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/admin" class="nav-link">Trang chủ</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/admin/order" class="nav-link">Danh sách đơn hàng</a>
+        </li>
+
+    </ul>
+}
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Danh sách đơn hàng</h3>
+        </div>
+        <div class="card-body" style="padding:0.5rem;">
+            <div class="row">
+                <div class="col-4">
+                    @using (Html.BeginForm("index", "Order", FormMethod.Get, new { }))
+                    {
+                        <div class="input-group input-group-sm">
+                            @*  @Html.TextBox("Searchtext", null, new { @class = "form-control" })*@
+                            <input type="text" name="Searchtext" class="form-control" placeholder="Nhập tên hoặc số điện thoại khách hàng">
+                            <span class="input-group-append">
+                                <button type="submit" class="btn btn-info btn-flat">Tìm kiếm</button>
+                            </span>
+                        </div>
+                    }
+                </div>
+                <div class="col-3">
+                    <form class="form-inline" action="/admin/order" method="get">
+                        <div class="input-group">
+                            <select name="month" class="form-control">
+                                <option value="">Tất cả</option>
+                                <option value="1">Tháng 1</option>
+                                <option value="2">Tháng 2</option>
+                                <option value="3">Tháng 3</option>
+                                <option value="4">Tháng 4</option>
+                                <option value="5">Tháng 5</option>
+                                <option value="6">Tháng 6</option>
+                                <option value="7">Tháng 7</option>
+                                <option value="8">Tháng 8</option>
+                                <option value="9">Tháng 9</option>
+                                <option value="10">Tháng 10</option>
+                                <option value="11">Tháng 11</option>
+                                <option value="12">Tháng 12</option>
+                                <!-- Thêm các tháng khác vào đây -->
+                            </select>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-info">Lọc theo tháng</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-3">
+                    <form class="form-inline" action="/admin/order" method="get">
+                        <div class="input-group">
+                            <select name="status" class="form-control">
+                                <option value="">Tất cả</option>
+                                <option value="1">Chưa duyệt</option>
+                                <option value="2">Đã duyệt</option>
+                                <option value="3">Đang giao</option>
+                                <option value="4">Hoàn thành</option>
+                            </select>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-info">Lọc theo trạng thái</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã đơn hàng</th>
+                            <th>Tên khách hàng</th>
+                            <th>Sđt</th>
+                            <th>Tổng tiền</th>
+                            <th>Thanh toán</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                            <th style="width:150px;">Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            var i = ((ViewBag.Page - 1) * ViewBag.PageSize) + 1;
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.Code</td>
+                                    <td>@item.CustomerName</td>
+                                    <td>@item.Phone</td>
+                                    <td>@WebShoeShop.Common.Common.FormatNumber(item.TotalAmount, 0)</td>
+                                    <td>@(item.StatusPayMent ==1?"Chờ thanh toán":"Đã thanh toán")</td>
+                                    <td>
+                                        @switch (item.Status)
+                                        {
+                                            case 1:
+                                                @:Chưa duyệt
+                                                break;
+                                            case 2:
+                                                @:Đã duyệt
+                                                break;
+                                            case 3:
+                                                @:Đang giao
+                                                break;
+                                            case 4:
+                                                @:Hoàn thành
+                                                break;
+                                            default:
+                                                @:Không xác định
+                                                break;
+                                        }
+                                    </td>
+                                    <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <a href="/admin/order/view/@item.Id" class="btn btn-sm btn-success"><i class="fa fa-eye"></i></a>
+                                        <a href="#" class="btn btn-sm btn-danger btnCapNhat" data-id="@item.Id"><i class="fa fa-pen-square"></i></a>
+                                        <a href="#" class="btn btn-info btnExportExcel" data-id="@item.Id"><i class="fa fa-file-download"></i></a>
+
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <div class="row">
+                    <div class="col-6"></div>
+                    <div class="col-6" style="text-align:right;">
+                        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+
+            </div>
+            <!-- /.card-footer-->
+        </div>
+        <!-- /.card -->
+
+</section>
+<!-- /.content -->
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Cập nhật trạng thái</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="txtOrderId" value="0" />
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select class="form-control" id="ddTrangThai">
+                        <option value="1">
+                            Chưa duyệt
+                        </option>
+                        <option value="2">
+                            Đã duyệt
+                        </option>
+                        <option value="3">
+                            Đang giao
+                        </option>
+                        <option value="4">
+                            Hoàn thành
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Thanh toán</label>
+                    <select class="form-control" id="ddThanhToan">
+                        <option value="2">
+                            Đã thanh toán
+                        </option>
+                        <option value="1">
+                            Chưa thanh toán
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="btnLuu">Lưu</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('body').on('click', '.btnCapNhat', function () {
+                var id = $(this).data("id");
+                $('#txtOrderId').val(id);
+                $('#modal-default').modal('show');
+            });
+
+            $('body').on('click', '#btnLuu', function () {
+                var id = $('#txtOrderId').val();
+                var tt = $('#ddTrangThai').val();
+                var payment = $('#ddThanhToan').val();
+                $.ajax({
+                    url: '/admin/order/UpdateTT',
+                    type: 'POST',
+                    data: { id: id, trangthai: tt, thanhtoan: payment },
+                    success: function (res) {
+                        if (res.Success) {
+                            location.reload();
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click', '.btnExportExcel', function () {
+                var orderid = $(this).data('id');
+                $.ajax({
+                    url: '/admin/order/exportexcel',
+                    type: 'GET',
+                    datatype: 'json',
+                    data: { orderId: orderid },
+                    success: function (res) {
+                        if (res !== '') {
+                            location.href = "/Resources/ExportExcel/" + res;
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+}

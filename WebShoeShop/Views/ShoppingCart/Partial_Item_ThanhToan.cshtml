@@ -1,0 +1,48 @@
+﻿@model IEnumerable<WebShoeShop.Models.ShoppingCartItem>
+@using WebShoeShop.Common
+
+@if (Model != null && Model.Any())
+{
+    <h3>SẢN PHẨM <span style="float:right;position:relative"><small>@Model.Count()</small></span></h3>
+    var i = 0;
+    var tongtien = decimal.Zero;
+<div class="table-responsive">
+    <table class="table table-active">
+        <thead>
+            <tr>
+                <th scope="col">Sản phẩm</th>
+                <th scope="col">Ảnh</th>
+                <th scope="col">Giá</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Size</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                tongtien += item.TotalPrice;
+                <tr class="cart-item" data-total-price="@item.TotalPrice">
+                    <td>@item.ProductName</td>
+                    <td><img src="@item.ProductImg" alt="Alternate Text" width="60" /></td>
+                    <td>@Common.FormatNumber(item.Price, 0)</td>
+                    <td> @item.Quantity</td>
+                    <td>@item.Size</td>
+                </tr>
+            }
+            <tr>
+                <td>Phí giao hàng</td>
+                <td id="cost">0</td>
+            </tr>
+            <tr>
+                <td>Tổng tiền</td>
+                <td id="total">@Common.FormatNumber(tongtien, 0)</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+}
+else
+{
+
+}

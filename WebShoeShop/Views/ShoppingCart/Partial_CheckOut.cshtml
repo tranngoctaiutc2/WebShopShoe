@@ -1,0 +1,306 @@
+﻿@model WebShoeShop.Models.OrderViewModel
+@{
+    if (ViewBag.User != null)
+    {
+        /* var user = (WebShoeShop.Models.ApplicationUser)ViewBag.User;*/
+    }
+}
+@using (Ajax.BeginForm("CheckOut", "Shoppingcart", new AjaxOptions
+{
+    HttpMethod = "POST",
+    UpdateTargetId = "load_data",
+    OnSuccess = "OnSuccessCO",
+    OnFailure = "OnFailure",
+    OnBegin = "OnBeginCO"
+}, new { @Id = "myForm" }))
+{
+    <script>
+        function OnBeginCO() {
+            $('#btnCheckOut').attr("disabled", "disabled");
+            $('#load_send').html('<div class="spinner"><i class="fa fa-spinner fa-spin"></i></div><p>Đang xử lí...</p>');
+        }
+        function OnSuccessCO(res) {
+            if (res.Success) {
+                if (res.Code == 1) {
+                    location.href = "/ShoppingCart/CheckOutSuccess";
+                }
+                else {
+                    location.href = res.Url;
+                }
+            }
+        }
+        //function OnFailure() {
+
+        //}
+    </script>
+    @Html.AntiForgeryToken()
+    <h3>Thông tin giao hàng</h3>
+    if (!Request.IsAuthenticated)
+    {
+        <div class="form-group">
+            <label>Họ tên khách hàng</label>
+            <input type="text" name="CustomerName" required class="form-control" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label>Số điện thoại</label>
+            <input type="text" name="Phone" class="form-control" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label>Địa chỉ</label>
+            <input type="text" name="Address" required class="form-control" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="text" name="Email" class="form-control" autocomplete="off" />
+        </div>
+    }
+    else
+    {
+        var user = (WebShoeShop.Models.ApplicationUser)ViewBag.User;
+        <div class="form-group">
+            <label>Họ tên khách hàng</label>
+            <input type="text" name="CustomerName" value="@user.FullName" required class="form-control" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label>Số điện thoại</label>
+            <input type="text" name="Phone" value="@user.Phone" class="form-control" autocomplete="off" />
+        </div>
+        <div class="form-group">
+            <label for="citySelect">Thành phố</label>
+            <select id="citySelect" name="City" required class="form-control" onchange="fetchDistricts(); getCoordinates();">
+                <option value="">-- Chọn thành phố --</option>
+            </select>
+            @*<div id="coordinates"></div>*@
+        </div>
+        <div class="form-group">
+            <label for="districtSelect">Quận/Huyện</label>
+            <select id="districtSelect" name="District" required class="form-control" onchange="fetchWards();">
+                <option value="">-- Chọn quận/huyện --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="wardSelect">Phường/Xã</label>
+            <select id="wardSelect" name="Ward" required class="form-control" oninput="generateFullAddress()">
+                <option value="">-- Chọn phường/xã --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="city">Địa chỉ cụ thể</label>
+            <input type="text" id="AddressDetail" name="AddressDetail" required class="form-control" autocomplete="off" oninput="generateFullAddress()" />
+        </div>
+        <div class="form-group">
+            <label for="Address">Địa chỉ đầy đủ</label>
+            <input type="text" id="Address" name="Address" required class="form-control" autocomplete="off" readonly />
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="text" name="Email" value="@user.Email" class="form-control" autocomplete="off" />
+        </div>
+    }
+    <div class="form-group">
+        <label>Phương thức vận chuyển</label>
+        <select class="form-control" name="TypeShip">
+            <option value="1">Nhanh (phí giao hàng: miễn phí)</option>
+            <option value="2">Hỏa tốc (phí giao hàng: 70000)</option>
+        </select>
+        <div id="distance"></div>
+    </div>
+    <div class="form-group">
+        <label>Hình thức thanh toán</label>
+        <select class="form-control" name="TypePayment" id="drTypePayment">
+            <option value="1" selected>COD</option>
+            <option value="2">Chuyển khoản</option>
+        </select>
+    </div>
+
+    <div class="form-group" id="load_form_payment" style="display:none;">
+        <h4><label>Chọn phương thức thanh toán:</label><br /></h4>
+        <h5>Cách 1: Chuyển hướng sang VNPAY chọn phương thức thanh toán</h5>
+        <label><input type="radio" name="TypePaymentVN" value="0" checked />Cổng thanh toán VNPAY</label>
+        <h5>Cách 2: Tách phương thức thanh toán tại site của Merchant</h5>
+        <label><input type="radio" name="TypePaymentVN" value="1" />Thanh toán qua ứng dụng hỗ trợ VNPAYQR</label><br />
+        <label><input type="radio" name="TypePaymentVN" value="2" />ATM - Tài khoản ngân hàng nội địa</label><br />
+        <label><input type="radio" name="TypePaymentVN" value="3" />Thanh toán qua thẻ quốc tế</label><br />
+    </div>
+    <div class="form-group" id="load_send"></div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-block btn-success" id="btnCheckOut">Đặt hàng</button>      
+    </div>
+
+}
+
+<script type="text/javascript">
+    const apiKey = 'f4b8b19d-21a7-11ef-9687-e65979a55bd5';
+    const originLat = 10.84577744227382;
+    const originLon = 106.79418264976631;
+    var destiLat = 0;
+    var destiLon = 0;
+
+
+
+    // Fetch and populate provinces
+    fetch('https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Token': apiKey
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            const citySelect = document.getElementById('citySelect');
+            data.data.forEach(province => {
+                const option = document.createElement('option');
+                option.value = province.ProvinceID;
+                option.textContent = province.ProvinceName;
+                citySelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching provinces:', error));
+
+
+    function getCoordinates(cityName) {
+        return fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cityName)}&format=json&limit=1`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    const { lat, lon } = data[0];
+                    document.getElementById('coordinates').innerText = `Tọa độ: Latitude = ${lat}, Longitude = ${lon}`;
+                    destiLat = lat;
+                    destiLon = lon;
+                } else {
+                    document.getElementById('coordinates').innerText = 'Không tìm thấy kết quả.';
+                    throw new Error('Không tìm thấy kết quả.');
+                }
+            })
+            .catch(error => console.error('Lỗi khi lấy tọa độ:', error));
+    }
+
+/*    function calculateDistance(origin, destination) {
+        const url = `https://rsapi.goong.io/DistanceMatrix?origins=${origin.lat},${origin.lon}&destinations=${destination.lat},${destination.lon}&vehicle=car&api_key=yr0B0oRR9YfPI7RO8l8QTPmtiJxDlz8EmWXDuIqE`;
+        return fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.rows.length > 0 && data.rows[0].elements.length > 0) {
+                    return data.rows[0].elements[0].distance.value / 1000; // Convert meters to kilometers
+                } else {
+                    throw new Error('No distance data found.');
+                }
+            });
+    }*/
+/*    document.querySelector('select[name="TypeShip"]').addEventListener('change', function () {
+        var totalElement = document.getElementById('total');
+        var costShipElement = document.getElementById('cost');
+        var tongtien = 0; // Đặt lại tổng tiền trước khi tính toán lại
+
+        const cityName = document.getElementById('citySelect').selectedOptions[0].textContent;
+        // Tính tổng tiền từ các sản phẩm trong giỏ hàng
+        document.querySelectorAll('.cart-item').forEach(function (item) {
+            tongtien += parseFloat(item.dataset.totalPrice);
+        });
+
+        getCoordinates(cityName).then(() => {
+            calculateDistance({ lat: originLat, lon: originLon }, { lat: destiLat, lon: destiLon }).then(distance => {
+                let phigiaohang = 0;
+                if (distance < 50) {
+                    phigiaohang = 30000;
+                } else if (distance >= 50 && distance < 100) {
+                    phigiaohang = 40000;
+                } else if (distance >= 100) {
+                    phigiaohang = 50000;
+                }
+
+                if (document.querySelector('select[name="TypeShip"]').value === '2') { // Hỏa tốc
+                    phigiaohang += 50000;
+                }
+
+                const newTotal = tongtien + phigiaohang;
+                totalElement.textContent = newTotal;
+                costShipElement.textContent = phigiaohang;
+
+            });
+        }).catch(error => console.error('Lỗi khi tính phí giao hàng:', error));
+    });*/
+
+    function generateFullAddress() {
+        const city = document.getElementById('citySelect').selectedOptions[0].textContent;
+        const district = document.getElementById('districtSelect').selectedOptions[0].textContent;
+        const ward = document.getElementById('wardSelect').selectedOptions[0].textContent;
+        const deaddress = document.getElementById('AddressDetail').value;
+
+        const fullAddress = `${deaddress}, ${ward}, ${district}, ${city}`;
+        document.getElementById('Address').value = fullAddress;
+    }
+
+
+    // Fetch and populate districts based on selected province
+    function fetchDistricts() {
+        const provinceId = document.getElementById('citySelect').value;
+        fetch('https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': apiKey
+            },
+            body: JSON.stringify({ "province_id": parseInt(provinceId) })
+        })
+            .then(response => response.json())
+            .then(data => {
+                const districtSelect = document.getElementById('districtSelect');
+                districtSelect.innerHTML = '<option value="">-- Chọn quận/huyện --</option>'; // Clear previous options
+                const wardSelect = document.getElementById('wardSelect');
+                wardSelect.innerHTML = '<option value="">-- Chọn phường/xã --</option>';
+                data.data.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district.DistrictID;
+                    option.textContent = district.DistrictName;
+                    districtSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching districts:', error));
+
+    }
+
+    // Fetch and populate wards based on selected district
+    function fetchWards() {
+        const districtId = document.getElementById('districtSelect').value;
+        fetch('https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': apiKey
+            },
+            body: JSON.stringify({ "district_id": parseInt(districtId) })
+        })
+            .then(response => response.json())
+            .then(data => {
+                const wardSelect = document.getElementById('wardSelect');
+                wardSelect.innerHTML = '<option value="">-- Chọn phường/xã --</option>'; // Clear previous options
+                data.data.forEach(ward => {
+                    const option = document.createElement('option');
+                    option.value = ward.WardCode;
+                    option.textContent = ward.WardName;
+                    wardSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching wards:', error));
+    }
+
+</script>
+<script>
+    document.querySelector('select[name="TypeShip"]').addEventListener('change', function () {
+        var totalElement = document.getElementById('total');
+        var costShipElement = document.getElementById('cost');
+        var tongtien = parseFloat(totalElement.textContent.replace(/\D/g, '')); // Lấy giá trị số từ chuỗi trong <td>
+        var phigiaohang = 70000;
+        if (this.value === '2') { // Phí giao hàng khi chọn option 2
+            var newTotal = tongtien + phigiaohang;
+            totalElement.textContent = newTotal; // Cập nhật giá trị trong <td>
+            costShipElement.textContent = phigiaohang;
+        } else {
+            totalElement.textContent = tongtien - phigiaohang;// Giữ nguyên giá trị ban đầu
+            costShipElement.textContent = 0;
+        }
+    });
+</script>

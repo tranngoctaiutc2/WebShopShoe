@@ -1,0 +1,42 @@
+﻿@model WebShoeShop.Models.EF.Subscribe
+
+<div class="newsletter">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="newsletter_text d-flex flex-column justify-content-center align-items-lg-start align-items-md-center text-center">
+                    <h4>Đăng ký nhận tin</h4>
+                    <p>Nhận thông tin sản phẩm mới nhất, tin khuyến mãi và nhiều hơn nữa.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                @using (Ajax.BeginForm("Subscribe", "Home", new AjaxOptions
+                {
+                    OnBegin = "OnBeginSub",
+                    OnSuccess = "OnSuccessSub",
+                    OnFailure = "OnFailureSub"
+                }))
+                {
+                    @Html.AntiForgeryToken()
+                    <script>
+                        function OnBeginSub() {
+
+                        }
+                        function OnSuccessSub(rs) {
+                            if (rs.Success) {
+                                alert("Đăng kí thành công");
+                            }
+                        }
+                        function OnFailureSub(rs) { }
+                    </script>
+                    <div class="newsletter_form d-flex flex-md-row flex-column flex-xs-column align-items-center justify-content-lg-end justify-content-center">
+                        <input id="newsletter_email" name="Email" type="email" placeholder="Your email" required="required" data-error="Valid email is required.">
+                        <button id="newsletter_submit" class="btn btn-outline-primary" type="submit" class="newsletter_submit_btn trans_300" value="Submit">Đăng ký</button>
+                    </div>
+                }
+                
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,131 @@
+﻿@{
+    ViewBag.Title = "Double 2T-2Q Sneaker";
+    ViewBag.SeoDescription = "Shop Online";
+}
+@using WebShoeShop.Common
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/main_styles.css">
+<!-- Slider -->
+@*<div class="main_slider" style="background-image: url(/Content/assets/images/banner2.png) ">
+        <div class="container fill_height">
+            <div class="row align-items-center fill_height">
+                <div class="col">
+                    <div class="main_slider_content">
+                        <div class="red_button shop_now_button"><a href="/tin-tuc">Xem ngay</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+<div class="main-slider">
+    <div class="slide-container">
+        <div class="slide activee">
+            <img src="@SettingHelper.GetValue("SettingBanner")" alt="Image 1">
+            <div class="slide-content">
+                <div class="red_button shop_now_button"><a href="/tin-tuc">Xem ngay</a></div>
+            </div>
+        </div>
+        <div class="slide">
+     
+            <img src="~/Content/assets/images/slideshow_1.jpg" />
+            <div class="slide-content">
+                <div class="red_button shop_now_button"><a href="/tin-tuc">Xem ngay</a></div>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="~/Content/assets/images/slideshow_2.jpg" />
+            <div class="slide-content">
+                <div class="red_button shop_now_button"><a href="/tin-tuc">Xem ngay</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="arrows">
+        <div class="arrow arrow-left">
+            <i class="fa fa-chevron-left"></i>
+        </div>
+        <div class="arrow arrow-right">
+            <i class="fa fa-chevron-right"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Banner -->
+<div class="benefit">
+    <div class="container">
+        <div class="row benefit_row">
+            <div class="col-lg-3 benefit_col">
+                <div class="benefit_item d-flex flex-row align-items-center">
+                    <div class="benefit_icon"><i class="fa fa-truck" aria-hidden="true"></i></div>
+                    <div class="benefit_content">
+                        <h6>miễn phí giao hàng</h6>
+                        <p>Cho đơn hàng trên 1 triệu đồng</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 benefit_col">
+                <div class="benefit_item d-flex flex-row align-items-center">
+                    <div class="benefit_icon"><i class="fa fa-money" aria-hidden="true"></i></div>
+                    <div class="benefit_content">
+                        <h6>Thanh toán</h6>
+                        <p>
+                            Tiền mặt &
+                            Thanh toán chuyển khoản
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 benefit_col">
+                <div class="benefit_item d-flex flex-row align-items-center">
+                    <div class="benefit_icon"><i class="fa fa-undo" aria-hidden="true"></i></div>
+                    <div class="benefit_content">
+                        <h6>Bảo hành và đổi trả</h6>
+                        <p>Thời gian bảo hành từ 5-7 ngày làm việc</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 benefit_col">
+                <div class="benefit_item d-flex flex-row align-items-center">
+                    <div class="benefit_icon"><i class="fa fa-phone-square" aria-hidden="true"></i></div>
+                    <div class="benefit_content">
+                        <h6>Hỗ trợ tư vấn</h6>
+                        <p>
+                            Luôn phản hồi trực tuyến 24/7
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Benefit -->
+@Html.Action("MenuProductCategory", "Menu")
+
+<!-- New Arrivals -->
+
+<div class="new_arrivals">
+    <div class="container">
+        @Html.Action("MenuArrivals", "Menu")
+    </div>
+</div>
+
+<!-- Deal of the week -->
+@*
+<div class="deal_ofthe_week">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+              
+            </div>
+            <div class="col-lg-6 text-right deal_ofthe_week_col">
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<!--Feature -->
+@Html.Action("Partial_ProductFeature", "Products")
+<!-- Best Sellers -->
+@Html.Action("Partial_ProductSales", "Products")
+
+<!-- Blogs -->
+@Html.Action("Partial_News_Home", "News")
+@*@Html.Action("Chat","Home")*@

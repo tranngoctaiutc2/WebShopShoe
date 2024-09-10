@@ -1,0 +1,24 @@
+﻿@model WebShoeShop.Models.ThongKeModel
+@if (Model != null)
+{
+    <div class="thongke">
+        <table class="table">
+            <tr>
+                <td>Đang Online</td>
+                <td>@ViewBag.Visitors_online</td>
+            </tr>
+            <tr>
+                <td>Thống kê ngày</td>
+                <td>@Model.HomNay</td>
+            </tr>
+            <tr>
+                <td>Thống kê tháng</td>
+                <td>@Model.ThangNay</td>
+            </tr>
+            <tr>
+                <td>Tất cả</td>
+                <td>@Model.TatCa</td>
+            </tr>
+        </table>
+    </div>
+}

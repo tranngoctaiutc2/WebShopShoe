@@ -1,0 +1,49 @@
+﻿@model List<WebShoeShop.Models.EF.Order>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Đơn hàng trong tháng</h3>
+                <div class="card-tools">
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0" style="height: 500px;">
+                @if (Model.Count > 0)
+                {
+                    <table class="table table-head-fixed text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>Stt</th>
+                                <th>Mã đơn hàng</th>
+                                <th>Tên khách hàng</th>
+                                <th>Tổng tiền</th>
+                                <th>Ngày tạo</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model)
+                            {
+                                <tr>
+                                    <td>@(Model.IndexOf(order) + 1)</td>
+                                    <td>@order.Code</td>
+                                    <td>@order.CustomerName</td>
+                                    <td>@order.TotalAmount</td>
+                                    <td>@order.CreatedDate</td>
+                                    <td>@(order.Status ==1?"Chờ thanh toán":"Đã thanh toán")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>Chưa có đơn hàng nào trong ngày.</p>
+                }
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
